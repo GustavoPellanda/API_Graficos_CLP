@@ -62,14 +62,14 @@ valor_atual = obtem_valor_atual()
 
 # Busca o template HTML
 @app.route('/')
-def valor_display():
+def display_variables():
     return render_template('index.html', var1=valor_atual)
 
 # Envia a variável à página Web:
 @app.route('/obtem_valor_atual')
-def valor_route():
+def obtem_valor_atual_route():
     valor_atual = obtem_valor_atual()
-    return json.dumps(valor_atual, cls=Variavel_CLP_Encoder)
+    return json.dumps(valor_atual, cls=Variavel_CLPEncoder)
 
 if __name__ == '__main__':
     app.run()
