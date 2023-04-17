@@ -10,13 +10,13 @@ CLP_Endereco = f"http://{IP}//getvar.csv"
 # Classe que guarda as informações de cada variável do CLP
 # Modelo de uma variável: "LT_Temp_IHM",73,"",REAL,R,"24.55"
 class Variavel_CLP:
-    def __init__(var, name, id, desc, type, access, val):
-        var.name = name
-        var.id = id
-        var.desc = desc
-        var.type = type
-        var.access = access
-        var.val = val
+    def __init__(self, name, id, desc, type, access, val):
+        self.name = name
+        self.id = id
+        self.desc = desc
+        self.type = type
+        self.access = access
+        self.val = val
 
 # Obtém e filtra o CSV em busca do valor de uma variável
 def obtem_valor_atual():
@@ -31,7 +31,7 @@ def obtem_valor_atual():
         else:
             print("Falha na requisição GET. Erro: " + str(responseCode))
     except urllib.error.URLError as e:
-        print("Não foi possível enviar a requisiçaõ GET. Erro: " + str(e.reason))
+        print("Não foi possível enviar a requisição GET. Erro: " + str(e.reason))
 
     # Divide o CSV recebido em uma linha para cada variável
     divide_linhas = CSV_Conteudo.splitlines()
@@ -40,7 +40,7 @@ def obtem_valor_atual():
     # Define o ID da variável que será buscada:
     CLP_var_ID = "75"
     
-    # Distrubui as informações de cada variável em seus respectivos atributos
+    # Distribui as informações de cada variável em seus respectivos atributos
     CLP_var = []
     for cadaLinha in CSV_EmLinhas:
         if cadaLinha[1] == CLP_var_ID:
@@ -50,13 +50,13 @@ def obtem_valor_atual():
     return CLP_var
 
 # Criação da rota de dados Flask para o valor extraído da variável:
-class Variavel_CLP_Encoder(json.JSONEncoder):
+app = Flask(__name__)
+
+class Variavel_CLPEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Variavel_CLP):
             return obj.__dict__
         return super().default(obj)
-
-app = Flask(__name__)
 
 valor_atual = obtem_valor_atual()
 
