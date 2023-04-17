@@ -27,4 +27,7 @@
 <h2>Gráficos Resultantes</h2>
   <p>Exemplo de um dos gráficos resultantes.</p>
   <img src="https://user-images.githubusercontent.com/129123498/232354503-43513c55-be3b-4e57-9794-b18a929f22ee.png" alt="Gráfico sendo exibido na web">
+  <p>Curva de aquecimento:</p>
+  <img src="https://user-images.githubusercontent.com/129123498/232528317-81cd9710-df14-4214-8c89-683e408d6119.png" alt="Gráfico sendo exibido na web">
+  <img src="https://user-images.githubusercontent.com/129123498/232528310-944c3923-e2d6-4bce-a806-e9dddced4945.png" alt="Gráfico sendo exibido na web">
 
