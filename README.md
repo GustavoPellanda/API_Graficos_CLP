@@ -1,19 +1,27 @@
 <h1 align="center"> API de Gráficos do CLP </h1>
 
-<p> API_CLP é um programa que recebe um CSV com as variáveis disponíveis de um CLP, busca por uma em específico a partir de seu índice, salva os valores obtidos os transmite para um template web.</p>
-<p>O programa API_CLP incialmente faz requisição getvar.csv para um web server definido por seu IP. O web server para o qual essa aplicação foi criada é um CLP, que responde essa requisição com um arquivo CSV contendo todas as variáveis que ele têm disponíveis no momento e os respectivos valores armazenados nelas. O código então busca pela variável de temperatura, que pode ser encontrada a partir de seu ID, e salva suas informações na classe Variavel_CLP. Por fim, é criada uma rota de dados Flask que transmite Variavel_CLP para um template web.</p>
-<p>O template web index.html faz requisições fetch para a rotas de dados Flask para obter Variavel_CLP. O histórico de valores é plotado em um gráfico, assim como uma média dos últimos valores obtidos. O gráfico é criado a partir da biblioteca Chart JS.</p>
-
+<p>API_CLP é um programa que busca as variáveis disponíveis de um CLP e cria uma rota de transmissão de seus valores para um template web.</p>
+<p>Em conjunto com display_grafico, a finalidade deste programa é que uma variável escolhida pelo usuário tenha um histórico de seus valores exibidos em uma página web de forma gráfica.</p>
 
 <h2>Conteúdos</h2>
   <ul>
+    <li><a href="#Funcionamento">Funcionamento</a></li>
     <li><a href="#Utilização">Utilização</a></li>
-     <li><a href="#Tecnologias Utilizadas">Tecnologias Utilizadas</a></li>
+    <li><a href="#Tecnologias Utilizadas">Tecnologias Utilizadas</a></li>
     <li><a href="#Gráficos Resultantes">Gráficos Resultantes</a></li>
   </ul>
 
+<h2>Funcionamento</h2>
+<p>O programa API_CLP faz requisições getvar.csv para um web server definido por seu IP. O web server para o qual essa aplicação foi criada é um CLP, que responde essa requisição com um arquivo CSV contendo todas as variáveis que ele têm disponíveis no momento e os respectivos valores armazenados nelas. 
+
+Inicialmente, as variáveis que possuem valor numérico são filtradas e enviadas ao primeiro template web, index.html, que as organiza em uma tabela. Dessa forma, o usuário pode escolher a variável que deseja exibir de forma gráfica. A escolha retorna um POST para API_CLP.
+
+O código então busca pela variável escolhida, que pode ser encontrada a partir de seu ID, e salva suas informações na classe Variavel_CLP. Por fim, é criada uma rota de dados Flask que transmite Variavel_CLP para o segundo template web, display_grafico.
+
+O template display_grafico.html faz requisições fetch para a rotas de dados Flask para obter Variavel_CLP. O histórico de valores é plotado em um gráfico, assim como uma média dos últimos valores obtidos. O gráfico é criado a partir da biblioteca Chart JS.</p>
+
 <h2>Utilização</h2>
-   <p>Basta definir o IP do web server e o índice da variável que será buscada e rodar o programa. index.html deve estar salvo em uma pasta "templates".</p>
+   <p>Basta definir o IP do web server e rodar o programa. Os templates HTML devem estar salvos em uma pasta "templates".</p>
 
 <h2>Tecnologias Utilizadas</h2>
 <ul>
