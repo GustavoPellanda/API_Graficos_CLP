@@ -7,7 +7,7 @@
 </head>
 
 <body>
-    <h1>Gráfico</h1>
+    <h1 id="graphTitle"></h1>
     <p>Valor: <span id="valueElement"></span></p>
     <p id="averageElement">Média das últimas 30 medições: </p>
     <div style="width: 1000px; height: 500px; margin-left: 1em;">
@@ -36,7 +36,7 @@
                 ]
             },
             options: {
-
+                
             }
         });
 
@@ -51,7 +51,13 @@
                 chart.data.datasets[1].data.shift(); // Shift average data points array as well
             }
             // Update the chart display
+            chart.options.title = {
+                display: true,
+                text: data.var_name
+            };
             chart.update();
+            // Update the graph title
+            document.getElementById('graphTitle').innerHTML = data.var_name;
         }
 
         function calculateAverage(data) {
@@ -75,7 +81,8 @@
                     document.getElementById('valueElement').innerHTML = data[0].val;
                     updateChart({
                         label: new Date().toLocaleTimeString(),
-                        value: data[0].val
+                        value: data[0].val,
+                        var_name: data[0].name
                     });
                     var average = calculateAverage(chart.data.datasets[0].data);
                     document.getElementById('averageElement').innerHTML = "Média das últimas 30 medições: " + average;
