@@ -1,90 +1,80 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<style>
+    .cabecalho {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background-color: #f0f0f0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    #title {
+        margin: 0;
+    }
+
+    #submitBtn {
+        background-color: #004097;
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+    }
+
+    #submitBtn:hover {
+        background-color: #0066CC;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 95%;
+        margin-left: 10px;
+        margin-top: 50px; 
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #f2f2f2;
+    }
+</style>
+<html>
 
 <head>
-    <title>Temperatura</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Variáveis REAL e INT</title>
 </head>
 
 <body>
-    <h1>Temperatura</h1>
-    <p>Valor: <span id="valueElement"></span></p>
-    <p id="averageElement">Média das últimas 30 medições: </p>
-    <div style="width: 1000px; height: 500px; margin-left: 1em;">
-        <canvas id="chartElement"></canvas>
-    </div>
-    <script>
-        var ctx = document.getElementById('chartElement').getContext('2d');
-        var chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                        label: 'Valor atual',
-                        data: [], // Histórico de valores do eixo y (temperatura)
-                        fill: false,
-                        borderColor: 'orange', // Cor da linha
-                        tension: 0.1
-                    },
-                    {
-                        label: 'Média',
-                        data: [], // Histórico de valores para a média
-                        fill: false,
-                        borderColor: 'red', 
-                        tension: 0.1
-                    }
-                ]
-            },
-            options: {
-
-            }
-        });
-
-        function updateChart(data) {
-            // Atualiza o gráfico com os dados mais atuais
-            chart.data.labels.push(data.label);
-            chart.data.datasets[0].data.push(data.value);
-            if (chart.data.labels.length > 60) { // Define a qunatidade de valores que serão exibidos simultaneamente
-                chart.data.labels.shift();
-                chart.data.datasets[0].data.shift(); // Move à gráfico à esquerda quando o total de valores já foi preenchido
-                chart.data.datasets[1].data.shift(); 
-            }
-            chart.update();
-        }
-
-        // Calcula a média dos últimos 20 valores
-        function calculateAverage(data) {
-            var sum = 0;
-            var count = 0;
-            for (var i = data.length - 1; i >= 0 && count < 30; i--) {
-                if (!isNaN(data[i])) { // Filtra valores NaN
-                    sum += parseFloat(data[i]);
-                    count++;
-                }
-            }
-            var average = sum / count;
-            return average.toFixed(2); // Média com duas casas decimais
-        }
-
-        function updateValue() {
-            // Recebe os dados da rota criada com flask
-            fetch('/obtem_valor_atual')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('valueElement').innerHTML = data[0].val;
-                    updateChart({
-                        label: new Date().toLocaleTimeString(),
-                        value: data[0].val
-                    });
-                    var average = calculateAverage(chart.data.datasets[0].data);
-                    document.getElementById('averageElement').innerHTML = "Média das últimas 30 medições: " + average;
-                    chart.data.datasets[1].data.push(average); // Adiciona o valor da média ao gráfico
-                    chart.update();
-                })
-                .catch(error => console.error('Error updating value:', error));
-        }
-        setInterval(updateValue, 2000); // Define o intervalo entre as requisições
-    </script>
+    <form action="/" method="post">
+        <div class="cabecalho">
+            <h1 id="title">Variáveis REAL e INT disponíveis:</h1>
+            <input type="submit" value="Escolher" id="submitBtn">
+        </div>
+        <table>
+            <tr>
+                <th></th>
+                <th>Variável</th>
+                <th>Tipo</th>
+            </tr>
+            {% for row in variables %}
+            <tr>
+                <td><input type="radio" name="variable" value="{{ row[0] }}, {{ row[1] }}, {{ row[2] }}"></td>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[2] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </form>
 </body>
 
 </html>
