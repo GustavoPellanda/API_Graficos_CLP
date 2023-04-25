@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <title>Gráfico</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <h1>Gráfico</h1>
+    <p>Valor: <span id="valueElement"></span></p>
+    <p id="averageElement">Média das últimas 30 medições: </p>
+    <div style="width: 1000px; height: 500px; margin-left: 1em;">
+        <canvas id="chartElement"></canvas>
+    </div>
+    <script>
+        var ctx = document.getElementById('chartElement').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [], // Labels for x-axis (e.g., timestamps)
+                datasets: [{
+                        label: 'Valor atual',
+                        data: [], // Historical data for y-axis
+                        fill: false,
+                        borderColor: 'orange',
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Média',
+                        data: [], // Historical data for average value (initially empty)
+                        fill: false,
+                        borderColor: 'red', // Set color
+                        tension: 0.1
+                    }
+                ]
+            },
+            options: {
+
+            }
+        });
+
+        function updateChart(data) {
+            // Update the chart data and labels
+            chart.data.labels.push(data.label);
+            chart.data.datasets[0].data.push(data.value);
+            // Limit the chart to display a fixed number of data points (e.g., 60)
+            if (chart.data.labels.length > 60) {
+                chart.data.labels.shift();
+                chart.data.datasets[0].data.shift();
+                chart.data.datasets[1].data.shift(); // Shift average data points array as well
+            }
+            // Update the chart display
+            chart.update();
+        }
+
+        function calculateAverage(data) {
+            // Calculate the average of the last 30 values
+            var sum = 0;
+            var count = 0;
+            for (var i = data.length - 1; i >= 0 && count < 30; i--) {
+                if (!isNaN(data[i])) { // Check for NaN values
+                    sum += parseFloat(data[i]);
+                    count++;
+                }
+            }
+            var average = sum / count;
+            return average.toFixed(2); // Return the average with 2 decimal places
+        }
+
+        function updateValue() {
+            fetch('/valor_atual')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('valueElement').innerHTML = data[0].val;
+                    updateChart({
+                        label: new Date().toLocaleTimeString(),
+                        value: data[0].val
+                    });
+                    var average = calculateAverage(chart.data.datasets[0].data);
+                    document.getElementById('averageElement').innerHTML = "Média das últimas 30 medições: " + average;
+                    chart.data.datasets[1].data.push(average); // Add average value to the chart
+                    chart.update();
+                })
+                .catch(error => console.error('Error updating value:', error));
+        }
+        setInterval(updateValue, 2000);
+    </script>
+</body>
+
+</html>
