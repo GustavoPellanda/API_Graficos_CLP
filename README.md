@@ -16,7 +16,7 @@
 
 Inicialmente, as variáveis que possuem valor numérico são filtradas e enviadas ao primeiro template web, index.html, que as organiza em uma tabela. Dessa forma, o usuário pode escolher a variável que deseja exibir de forma gráfica. A escolha retorna um POST para API_CLP.
 
-O código então busca pela variável escolhida, que pode ser encontrada a partir de seu ID, e salva suas informações na classe Variavel_CLP. Por fim, é criada uma rota de dados Flask que transmite Variavel_CLP para o segundo template web, display_grafico.
+O código então busca pela variável escolhida, que pode ser encontrada a partir de seu ID, e salva suas informações como instâncias da classe Variavel_CLP. Por fim, é criada uma rota de dados Flask que transmite Variavel_CLP para o segundo template web, display_grafico.
 
 O template display_grafico.html faz requisições fetch para a rotas de dados Flask para obter Variavel_CLP. O histórico de valores é plotado em um gráfico, assim como uma média dos últimos valores obtidos. O gráfico é criado a partir da biblioteca Chart JS.</p>
 
