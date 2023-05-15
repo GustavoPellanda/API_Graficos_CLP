@@ -1,19 +1,52 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+{% extends "layout.html" %}
 
+{% block content %}
 <head>
     <title>Gráfico</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .graph {
+            padding-left: 1em;
+            position: relative;
+            height: calc(100vh - 15em);
+            max-height: calc(100vh - 15em);
+        }
+        input[type="number"] {
+            color: black;
+        }
+    </style>
 </head>
-
 <body>
-    <h1 id="graphTitle"></h1>
-    <p>Valor: <span id="valueElement"></span></p>
-    <p id="averageElement">Média das últimas 30 medições: </p>
-    <div style="width: 1000px; height: 500px; margin-left: 1em;">
+    <div style="padding-left: 1em;">
+        <h1 id="graphTitle"></h1>
+        <div style="padding-left: 1em;">
+            <p>Valor: <span id="valueElement"></span></p>
+            <p id="averageElement">Média das últimas 30 medições: </p>
+            <form>
+                <label for="variavel">Inserir Valor:</label>
+                <input type="number" name="variavel" id="variavel">
+                <button type="submit" class="button">Enviar</button>
+            </form>
+        </div>
+    </div>
+    <div class="graph">
         <canvas id="chartElement"></canvas>
     </div>
     <script>
+        // Envia os valores inseridos para alterar variáveis:
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var value = document.querySelector('#variavel').value;
+            var graphTitle = document.querySelector('#graphTitle').textContent; // get graphTitle value
+            fetch('/altera_variavel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'value=' + encodeURIComponent(value) + '&name=' + encodeURIComponent(graphTitle) // pass graphTitle value as 'name'
+            });
+        });
+
         var ctx = document.getElementById('chartElement').getContext('2d');
         var chart = new Chart(ctx, {
             type: 'line',
@@ -36,8 +69,35 @@
                 ]
             },
             options: {
-                
-            }
+                responsive: true,
+                maintainAspectRatio: false,
+                height: '100%',
+                scales: {
+                    y: {
+                        grid: {
+                            color: "#8899A6",
+                        },
+                        ticks: {
+                            color: '#8899A6',
+                        },
+                    },
+                    x: {
+                        grid: {
+                            color: "#8899A6",
+                        },
+                        ticks: {
+                            color: '#8899A6',
+                        },
+                    },
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#8899A6',
+                        },
+                    },
+                },
+            },
         });
 
         function updateChart(data) {
@@ -95,4 +155,4 @@
     </script>
 </body>
 
-</html>
+{% endblock %}
