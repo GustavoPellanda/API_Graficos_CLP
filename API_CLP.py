@@ -3,9 +3,9 @@ import urllib.request
 import urllib.error
 import csv
 import json
+import requests
 
-IP = input("Insira o endereço IP: ")
-CLP_Endereco = f"http://{IP}//getvar.csv"
+CLP_IP = "133.2.103.186"
 
 # Classe para guardar as informações de cada variável do CLP
 # Modelo de uma variável: "LT_Temp_IHM",73,"descrição",REAL,R,"24.55"
@@ -22,13 +22,16 @@ class Variavel_CLP:
 class Variavel_CLP_Encoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Variavel_CLP):
-            return obj.__dict__
-        return super().default(obj)
+            return {
+                'name': obj.name,
+                'val': obj.val,
+            }
+        return json.JSONEncoder.default(self, obj)
 
-# Requisita o arquivo CSV para o CLP:
-def comunica_CLP(CLP_Endereco):
+# Requisita o arquivo CSV completo para o CLP:
+def comunica_CLP_todas(CLP_IP):
     try:
-        url = urllib.request.urlopen(CLP_Endereco)
+        url = urllib.request.urlopen(f"http://{CLP_IP}/getvar.csv")
         responseCode = url.getcode()
         if responseCode == 200:
             inputStream = url.read()
@@ -44,10 +47,9 @@ def comunica_CLP(CLP_Endereco):
 
     return CSV_Conteudo
 
-
 # Obtém todas as variáveis que serão disponibilizadas para escolha:
 def obtem_variaveis_disponiveis():
-    CSV_Conteudo = comunica_CLP(CLP_Endereco)
+    CSV_Conteudo = comunica_CLP_todas(CLP_IP)
 
     # Filtra variáveis REAL e INT
     variaveis_disponiveis = []
@@ -57,35 +59,52 @@ def obtem_variaveis_disponiveis():
 
     return variaveis_disponiveis
 
-# Obtém e filtra o CSV em busca do valor de uma variável:
-def obtem_valor_atual():
-    CSV_Conteudo = comunica_CLP(CLP_Endereco)
+# Requisita uma variável específica para o CLP:
+def comunica_CLP_variavel(CLP_IP, id_var):
+    try:
+        url = urllib.request.urlopen(f"http://{CLP_IP}/getvar.csv?id={id_var}")
+        responseCode = url.getcode()
+        if responseCode == 200:
+            inputStream = url.read()
+            VAR_Conteudo = inputStream.decode('utf-8')
+            url.close()
+        else:
+            print("Falha na requisição GET. Erro: " + str(responseCode))
+    except urllib.error.URLError as e:
+        print("Não foi possível enviar a requisiçaõ GET. Erro: " + str(e.reason))
 
+    return VAR_Conteudo
+
+# Salva a variável selecionada em CLP_var:
+def obtem_valor_atual():
     # Busca o valor do ID recebido pelo POST do primeiro template
-    id_var_selecionada = session.get('id_var_selecionada', None)
-    if id_var_selecionada is None:
-        id_var_selecionada = 0
+    id_var = session.get('id_var_selecionada', None)
 
     # Formata o valor do ID como string e sem espaço
-    CLP_var_ID = str(id_var_selecionada).strip() 
+    id_var = str(id_var).strip() 
+
+    # Receve o retorno da variável específica:
+    VAR_Conteudo = comunica_CLP_variavel(CLP_IP, id_var)
 
     # Distrubui as informações de cada variável em seus respectivos atributos:
     CLP_var = []
-    for cadaLinha in CSV_Conteudo:
-        if cadaLinha[1] == CLP_var_ID:
-            addVar = Variavel_CLP(
-                name=cadaLinha[0], 
-                id=cadaLinha[1], 
-                desc=cadaLinha[2], 
-                type=cadaLinha[3], 
-                access=cadaLinha[4], 
-                val=cadaLinha[5]
-            )
-            CLP_var.append(addVar)
+    reader = csv.reader(VAR_Conteudo.splitlines())
+    next(reader)  # Pula a primeira linha
+
+    for valor_separado in reader:
+        addVar = Variavel_CLP(
+            name=valor_separado[0].strip('"'),
+            id=valor_separado[1],
+            desc=valor_separado[2].strip('"'),
+            type=valor_separado[3],
+            access=valor_separado[4],
+            val=valor_separado[5].strip('"')
+        )
+        CLP_var.append(addVar)
 
     return CLP_var
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.secret_key = '12345'
 
 # Primeira Página:
@@ -99,7 +118,7 @@ def tabela_disponiveis():
         # Redireciona para o template do gráfico:
         return redirect('/template_grafico')
 
-    return render_template('index.html', variables=obtem_variaveis_disponiveis())
+    return render_template('variaveis.html', variables=obtem_variaveis_disponiveis())
 
 # Segunda Página:
 @app.route('/template_grafico')
@@ -111,6 +130,18 @@ def display_variaveis():
 def valor_atual_route():
     valor_atual = obtem_valor_atual()
     return json.dumps(valor_atual, cls=Variavel_CLP_Encoder)
+
+# Recebe o valor da variável a ser alterada:
+@app.route('/altera_variavel', methods=['POST'])
+def altera_variavel_CLP():
+    if request.method == 'POST':
+        name = request.form['name']
+        value = request.form['value']
+        url = f"http://{CLP_IP}/setvar.csv"
+        data = {name: value}
+        # Envia ao CLP:
+        requests.post(url, data=data)
+        return render_template('display_grafico.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
