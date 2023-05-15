@@ -18,7 +18,9 @@ Inicialmente, as variáveis que possuem valor numérico são filtradas e enviada
 
 O código então busca pela variável escolhida, que pode ser encontrada a partir de seu ID, e salva suas informações como instâncias da classe Variavel_CLP. Por fim, é criada uma rota de dados Flask que transmite Variavel_CLP para o segundo template web, display_grafico.
 
-O template display_grafico.html faz requisições fetch para a rotas de dados Flask para obter Variavel_CLP. O histórico de valores é plotado em um gráfico, assim como uma média dos últimos valores obtidos. O gráfico é criado a partir da biblioteca Chart JS.</p>
+O template display_grafico.html faz requisições fetch para a rotas de dados Flask para obter Variavel_CLP. O histórico de valores é plotado em um gráfico, assim como uma média dos últimos valores obtidos. O gráfico é criado a partir da biblioteca Chart JS.
+
+Atualização: valores inseridos na caixa "Inserir Valor" na página de exibição dos gráficos são enviados ao CLP de forma que podem ser atribuídos à variável que está sendo exibida.</p>
 
 <h2>Utilização</h2>
    <p>Basta definir o IP do web server e rodar o programa. Os templates HTML devem estar salvos em uma pasta "templates".</p>
@@ -34,8 +36,7 @@ O template display_grafico.html faz requisições fetch para a rotas de dados Fl
 
 <h2>Gráficos Resultantes</h2>
   <p>Exemplo de um dos gráficos resultantes.</p>
-  <img src="https://user-images.githubusercontent.com/129123498/232354503-43513c55-be3b-4e57-9794-b18a929f22ee.png" alt="Gráfico sendo exibido na web">
-  <p>Curva de aquecimento:</p>
-  <img src="https://user-images.githubusercontent.com/129123498/232528317-81cd9710-df14-4214-8c89-683e408d6119.png" alt="Gráfico sendo exibido na web">
-  <img src="https://user-images.githubusercontent.com/129123498/232528310-944c3923-e2d6-4bce-a806-e9dddced4945.png" alt="Gráfico sendo exibido na web">
+  <img src="https://github.com/GustavoPellanda/API_Graficos_CLP/assets/129123498/8809b71f-c98b-4bb2-bc06-46aa03011b21" alt="Gráfico sendo exibido na web">
+  <p>Escolha das variáveis:</p>
+  <img src="https://github.com/GustavoPellanda/API_Graficos_CLP/assets/129123498/58132ae6-a842-4084-be35-1d431bd4ebf9" alt="Tabela das variáveis">
 
