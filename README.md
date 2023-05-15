@@ -37,6 +37,6 @@ Atualização: valores inseridos na caixa "Inserir Valor" na página de exibiç�
 <h2>Gráficos Resultantes</h2>
   <p>Exemplo de gráficos resultantes:</p>
   <img src="https://github.com/GustavoPellanda/API_Graficos_CLP/assets/129123498/8809b71f-c98b-4bb2-bc06-46aa03011b21" alt="Gráfico sendo exibido na web">
-  <img src="https://github.com/GustavoPellanda/API_Graficos_CLP/assets/129123498/35ad556c-0df9-432b-95c6-2714a951284a" alt="Gráfico sendo exibido na web">
+  <img src="https://github.com/GustavoPellanda/API_Graficos_CLP/assets/129123498/fde71502-7b52-4b33-a522-fd1e60aebd4f" alt="Gráfico sendo exibido na web">
   <p>Escolha das variáveis:</p>
   <img src="https://github.com/GustavoPellanda/API_Graficos_CLP/assets/129123498/58132ae6-a842-4084-be35-1d431bd4ebf9" alt="Tabela das variáveis">
