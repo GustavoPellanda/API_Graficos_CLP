@@ -1,37 +1,24 @@
-<!DOCTYPE html>
+{% extends "layout.html" %}
+
+{% block content %}
+
 <style>
     .cabecalho {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 10px;
-        background-color: #f0f0f0;
+        padding: 13px;
         position: sticky;
         top: 0;
         z-index: 100;
-    }
-
-    #title {
-        margin: 0;
-    }
-
-    #submitBtn {
-        background-color: #004097;
-        color: white;
-        padding: 10px;
-        border: none;
-        cursor: pointer;
-    }
-
-    #submitBtn:hover {
-        background-color: #0066CC;
+        background-color: #0F161E;
     }
 
     table {
         border-collapse: collapse;
         width: 95%;
         margin-left: 10px;
-        margin-top: 50px; 
+        margin-top: 30px; 
     }
 
     th, td {
@@ -41,30 +28,29 @@
     }
 
     th {
-        background-color: #f2f2f2;
+        background-color: #0F161E;
     }
 
     tr:hover {
-        background-color: #f2f2f2;
+        background-color: #22303C;
     }
 </style>
-<html>
 
 <head>
     <title>Variáveis REAL e INT</title>
 </head>
 
 <body>
-    <form action="/" method="post">
+    <form action="{{ url_for('tabela_disponiveis') }}" method="post">
         <div class="cabecalho">
             <h1 id="title">Variáveis REAL e INT disponíveis:</h1>
-            <input type="submit" value="Escolher" id="submitBtn">
+            <input type="submit" value="Escolher" id="submitBtn" class="button">
         </div>
         <table>
             <tr>
                 <th></th>
                 <th>Variável</th>
-                <th>Tipo</th>
+                <th>Descrição</th>
             </tr>
             {% for row in variables %}
             <tr>
@@ -77,4 +63,4 @@
     </form>
 </body>
 
-</html>
+{% endblock %}
